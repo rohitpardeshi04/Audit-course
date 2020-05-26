@@ -123,11 +123,11 @@
         <div class="row">
             <div class="col-md-4 p-3">
                 <label for="service">Service:</label><br>
-                <select id="slct1" name="slct1" onchange="sstate()"></select>
+                <select id="slct1" name="slct1" onchange="selectState()"></select>
             </div>
             <div class="col-md-4 p-3">
                 <label for="state">State:</label><br>
-                <select id="slct2" name="slct2" onchange="scity()"></select>
+                <select id="slct2" name="slct2" onchange="selectCity()"></select>
             </div>
             <div class="col-md-4 p-3">
                 <label for="city">City:</label><br>
@@ -185,7 +185,7 @@
                     }
                 });
         }
-        function sstate() {
+        function selectState() {
             "use strict"
             fetch("https://api.covid19india.org/resources/resources.json")
                 .then(function (resp) {
@@ -228,7 +228,7 @@
                     }
                 });
         }
-        function scity() {
+        function selectCity() {
             let city = [];
             "use strict"
             fetch("https://api.covid19india.org/resources/resources.json")
