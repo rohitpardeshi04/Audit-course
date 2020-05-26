@@ -7,44 +7,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <style>
-        ul {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            background-color: #eea29a;
-        }
-
-        li {
-            float: left;
-        }
-
-        li a {
-            display: block;
-            color: white;
-            text-align: center;
-            padding: 14px 16px;
-            text-decoration: none;
-        }
-
-        li a:hover:not(.active) {
-            background-color: #c94c4c;
-        }
-
-        .active {
-            background-color: #4CAF50;
-        }
-
         .header {
-            padding-top: 50px;
-            font-size: 50px;
+            font-size: 3rem;
             text-align: center;
             height: 180px;
             width: 100%;
             margin: 0%;
             color: black;
-            background-image: url("home-banner-1.jpg");
         }
 
         select {
@@ -111,11 +82,19 @@
             margin: 50px;
             font-size: 20px;
         }
+
+
+        .modal-dialog {
+            max-width: 750px;
+        }
     </style>
 </head>
 
 <body>
-    <header class="header mb-5">
+    <a class="btn btn-danger m-3" style="float: right; color: white;" data-toggle="modal" data-target="#myModal">
+        Live Covid-19 Updates
+    </a>
+    <header class="header mb-5 p-5">
         <b>Services For You</b>
     </header>
     <hr>
@@ -141,11 +120,67 @@
     </div>
     </div>
     <div class="container">
-        <div id="type1">
-        </div>
-        <div id="put">
+
+        <div id="result">
         </div>
     </div>
+
+
+
+
+    <!-- The Modal -->
+    <div class="modal fade" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Stats of India</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-3 p-3 text-center">
+                            <div class="box1">
+                                <h3>Total</h3>
+                            </div>
+                            <div class="box2">
+                                <div id="box2"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 p-3 text-center">
+                            <div class="box11">
+                                <h3>Active</h3>
+                            </div>
+                            <div class="box12" id="box12"></div>
+                        </div>
+                        <div class="col-md-3 p-3 text-center">
+                            <div class="box21">
+                                <h3>Recovered<h3>
+                            </div>
+                            <div class="box22" id="box22"></div>
+                        </div>
+                        <div class="col-md-3 p-3 text-center">
+                            <div class="box31">
+                                <h3>Deaths</h3>
+                            </div>
+                            <div class="box32" id="box32"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
 
     <script>
         let resources = [];
@@ -288,15 +323,35 @@
                 })
                 .then(function (data) {
                     var mainobj = data["resources"];
-                    var i = 0, output = '<table class="table"><tr><th><div class="tb1">Contact</div></th><th><div class="tb1">Description</div></th><th><div class="tb1">Name of the Organization</div></th><th><div class="tb1">Phone Number</div></th></tr>';
+                    var i = 0, outresult = '<table class="table"><tr><th>Contact</th><th>Description</th><th>Name of the Organization</th><th>Phone Number</div></th></tr>';
                     for (o of mainobj) {
                         if ((sv1 == o["category"]) && (sv2 == o["state"]) && (sv3 == o["city"])) {
-                            output += '<tr><td>' + o["contact"] + '</td><td>' + o["descriptionandorserviceprovided"] + '</td><td>' + o["nameoftheorganisation"] + '</td><td>' + o["phonenumber"] + '</td></tr>';
+                            outresult += '<tr><td>' + o["contact"] + '</td><td>' + o["descriptionandorserviceprovided"] + '</td><td>' + o["nameoftheorganisation"] + '</td><td>' + o["phonenumber"] + '</td></tr>';
                         }
                     }
-                    output += '</table';
-                    document.getElementById("put").innerHTML = output;
+                    outresult += '</table';
+                    document.getElementById("result").innerHTML = outresult;
                 });
         }
+
+
+        function table2() {
+            fetch("https://api.covid19india.org/data.json")
+                .then(function (resp) {
+                    return resp.json();
+                })
+                .then(function (data) {
+                    console.log(data.statewise[0].confirmed);
+                    var out = "<h3>" + data.statewise[0].confirmed + "<h3>";
+                    document.getElementById('box2').innerHTML = out;
+                    var out = "<h3>" + data.statewise[0].active + "<h3>";
+                    document.getElementById('box12').innerHTML = out;
+                    var out = "<h3>" + data.statewise[0].recovered + "<h3>";
+                    document.getElementById('box22').innerHTML = out;
+                    var out = "<h3>" + data.statewise[0].deaths + "<h3>";
+                    document.getElementById('box32').innerHTML = out;
+                });
+        }
+        table2();
     </script>
 </body>
