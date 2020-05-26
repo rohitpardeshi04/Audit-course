@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Services</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <style>
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #eea29a;
+        }
+
+        li {
+            float: left;
+        }
+
+        li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        li a:hover:not(.active) {
+            background-color: #c94c4c;
+        }
+
+        .active {
+            background-color: #4CAF50;
+        }
+
+        .header {
+            padding-top: 50px;
+            font-size: 50px;
+            text-align: center;
+            height: 180px;
+            width: 100%;
+            margin: 0%;
+            color: black;
+            background-image: url("home-banner-1.jpg");
+        }
+
+        select {
+            padding: 16px 20px;
+            border: none;
+            border-radius: 4px;
+            background-color: #f1f1f1;
+            border-radius: 5px;
+            width: 100%;
+        }
+
+        button {
+            padding: 16px 20px;
+            border: none;
+            border-radius: 4px;
+            background-color: rgb(197, 180, 180);
+            border-radius: 5px;
+            width: 100px;
+            font-size: 15px;
+        }
+
+        table {
+            border-collapse: collapse;
+            margin-top: 5%;
+            width: 100%;
+            height: 100%;
+
+        }
+
+        th {
+            border-top: 1px solid #000;
+            background-color: aqua;
+            padding: 5px;
+            border-width: 1px;
+            font-size: 15px;
+            border-style: solid;
+            border-radius: 5px;
+        }
+
+        td {
+            background-color: #d5f4e6;
+            padding: 5px;
+            border-style: solid;
+            border-width: 1px;
+            font-size: 15px;
+            border-radius: 5px;
+        }
+
+        .c1 {
+            margin-top: 40px;
+        }
+
+        label {
+            font-size: 15px;
+        }
+
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        p {
+            margin: 50px;
+            font-size: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header mb-5">
+        <b>Services For You</b>
+    </header>
+    <hr>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 p-3">
+                <label for="service">Service:</label><br>
+                <select id="slct1" name="slct1" onchange="sstate()"></select>
+            </div>
+            <div class="col-md-4 p-3">
+                <label for="state">State:</label><br>
+                <select id="slct2" name="slct2" onchange="scity()"></select>
+            </div>
+            <div class="col-md-4 p-3">
+                <label for="city">City:</label><br>
+                <select id="slct3" name="slct3"></select>
+            </div>
+        </div>
+
+        <hr />
+        <center><button onclick="data()">search</button></center>
+    </div>
+    </div>
+    </div>
+    <div class="container">
+        <div id="type1">
+        </div>
+        <div id="put">
+        </div>
+    </div>
+
+    <script>
+        let resources = [];
+        table();
+        function table() {
+            "use strict"
+            fetch("https://api.covid19india.org/resources/resources.json")
+                .then(function (resp) {
+                    return resp.json();
+                })
+                .then(function (data) {
+                    var mainobj = data["resources"];
+                    var i = 0;
+                    for (var o of mainobj) {
+                        var f = resources.indexOf(o["category"]);
+                        if (f == -1) {
+                            resources[i] = o["category"];
+                            i++;
+                        }
+                    }
+                    var s1 = document.getElementById('slct1');
+                    s1.innerHtml = "";
+                    var i = 0, optionArray = [];
+                    optionArray[i] = "|";
+                    i++;
+                    for (var j = 0; j < resources.length; j++) {
+                        var str = String(resources[j]) + "|" + String(resources[j]);
+                        optionArray[i] = str;
+                        i++;
+                    }
+                    for (var option in optionArray) {
+                        var pair = optionArray[option].split("|");
+                        var newOption = document.createElement("option");
+                        newOption.value = pair[0];
+                        newOption.innerHTML = pair[1];
+                        s1.options.add(newOption);
+                    }
+                });
+        }
+        function sstate() {
+            "use strict"
+            fetch("https://api.covid19india.org/resources/resources.json")
+                .then(function (resp) {
+                    return resp.json();
+                })
+                .then(function (data) {
+                    var mainobj = data["resources"], state = [];
+                    var i = 0;
+                    var s1 = document.getElementById('slct1');
+                    var sv1 = s1.value;
+                    for (var o of mainobj) {
+                        if (sv1 == o["category"]) {
+                            var f = state.indexOf(o["state"]);
+                            if (f == -1) {
+                                state[i] = o["state"];
+                                i++;
+                            }
+                        }
+                    }
+                    var s2 = document.getElementById('slct2');
+                    s2.innerHTML = ""
+                    var i = 0, optionArray = [];
+                    optionArray[i] = "|";
+                    i++;
+                    for (var j = 0; j < state.length; j++) {
+                        var str = String(state[j]) + "|" + String(state[j]);
+                        optionArray[i] = str;
+                        i++;
+                    }
+                    var len = s2.length;
+                    for (var i = len - 1; i >= 0; i--) {
+                        s2.remove(s2.options[i]);
+                    }
+                    for (var option in optionArray) {
+                        var pair = optionArray[option].split("|");
+                        var newOption = document.createElement("option");
+                        newOption.value = pair[0];
+                        newOption.innerHTML = pair[1];
+                        s2.options.add(newOption);
+                    }
+                });
+        }
+        function scity() {
+            let city = [];
+            "use strict"
+            fetch("https://api.covid19india.org/resources/resources.json")
+                .then(function (resp) {
+                    return resp.json();
+                })
+                .then(function (data) {
+                    var mainobj = data["resources"];
+                    var i = 0;
+                    var s2 = document.getElementById('slct2');
+                    var sv2 = s2.value;
+                    var s1 = document.getElementById('slct1');
+                    var sv1 = s1.value;
+                    for (var o of mainobj) {
+                        if ((sv2 == o["state"]) && (sv1 == o["category"])) {
+                            var f = city.indexOf(o["city"]);
+                            if (f == -1) {
+                                city[i] = o["city"];
+                                i++;
+                            }
+                        }
+                    }
+                    var s3 = document.getElementById('slct3');
+                    s3.innerHTML = "";
+                    var i = 0, optionArray = [];
+                    optionArray[i] = "|";
+                    i++;
+                    for (var j = 0; j < city.length; j++) {
+                        var str = String(city[j]) + "|" + String(city[j]);
+                        optionArray[i] = str;
+                        i++;
+                    }
+                    var len = s3.length;
+                    for (var i = len - 1; i >= 0; i--) {
+                        // s2.options[i] = null;
+                        s2.remove(s3.options[i]);
+                        //console.log(s2.options[i]);
+                    }
+                    for (var option in optionArray) {
+                        var pair = optionArray[option].split("|");
+                        var newOption = document.createElement("option");
+                        newOption.value = pair[0];
+                        newOption.innerHTML = pair[1];
+                        s3.options.add(newOption);
+                    }
+                });
+        }
+        function data() {
+            var s1 = document.getElementById('slct1');
+            var s2 = document.getElementById('slct2');
+            var s3 = document.getElementById('slct3');
+            var sv1 = s1.value, sv2 = s2.value, sv3 = s3.value;
+            "use strict"
+            fetch("https://api.covid19india.org/resources/resources.json")
+                .then(function (resp) {
+                    return resp.json();
+                })
+                .then(function (data) {
+                    var mainobj = data["resources"];
+                    var i = 0, output = '<table class="table"><tr><th><div class="tb1">Contact</div></th><th><div class="tb1">Description</div></th><th><div class="tb1">Name of the Organization</div></th><th><div class="tb1">Phone Number</div></th></tr>';
+                    for (o of mainobj) {
+                        if ((sv1 == o["category"]) && (sv2 == o["state"]) && (sv3 == o["city"])) {
+                            output += '<tr><td>' + o["contact"] + '</td><td>' + o["descriptionandorserviceprovided"] + '</td><td>' + o["nameoftheorganisation"] + '</td><td>' + o["phonenumber"] + '</td></tr>';
+                        }
+                    }
+                    output += '</table';
+                    document.getElementById("put").innerHTML = output;
+                });
+        }
+    </script>
+</body>
